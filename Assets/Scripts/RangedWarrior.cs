@@ -53,6 +53,10 @@ public class RangedWarrior : MonoBehaviour, IEnemy
         StartCoroutine(TickingBehaviourTree());
     }
 
+    public MonoBehaviour GetControlScript()
+    {
+        return this;
+    }
 
     private void ConstructBehaviourTree()
     {
@@ -103,7 +107,18 @@ public class RangedWarrior : MonoBehaviour, IEnemy
             yield return new WaitForSeconds(AI_EVALUATE_INTERVAL);
         }
     }
-    
+
+    public Collider2D GetCollider2D()
+    {
+        Collider2D collider2D = GetComponent<Collider2D>();
+        if (collider2D == null)
+        {
+            collider2D = transform.GetComponentInChildren<Collider2D>();
+        }
+
+        return collider2D;
+    }
+
     private bool TryRaycastDetectPlayer()
     {
         if (_player == null)

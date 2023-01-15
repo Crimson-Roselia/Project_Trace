@@ -15,6 +15,8 @@ namespace HLH.Mechanics
         [SerializeField] private PlayerHealthBar _hpBar;
         [SerializeField] private ParticleSystem _slashParticle;
         [SerializeField] private List<AudioClip> _slashAudios;
+        [SerializeField] private List<Sprite> _heavyAttackSprites;
+        [SerializeField] private EdgeCollider2D _heavyAttackPieCollider;
         private Rigidbody2D _rb;
         private AudioSource _audioSource;
         public static PlayerController Instance { get; private set; }
@@ -147,6 +149,48 @@ namespace HLH.Mechanics
             }
         }
 
+        private void PerformSwordHeavyAttack()
+        {
+            _isSwordAttacking = true;
+            _animatorNormal.enabled = false;
+            _visualNomal.sprite = _heavyAttackSprites[0];
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            float chargingSec = 1.0f;
+            s.AppendInterval(chargingSec);
+            s.AppendCallback(() => _visualNomal.sprite = _heavyAttackSprites[1]);
+            s.Append(_visualNomal.transform.DOShakePosition(0.5f, 0.2f));
+
+            Vector2 attackDir;
+            attackDir.x = _faceDirection.x;
+            attackDir.y = _faceDirection.y;
+            attackDir = attackDir.normalized;
+
+            s.AppendCallback(() => _visualNomal.sprite = _heavyAttackSprites[2]);
+            s.AppendCallback(() => PlaySlashParticleEffect());
+            s.AppendCallback(() => _slashParticle.transform.localScale *= 1.5f);
+            
+
+        }
+
+        private void HeavyAttackHitEnemies()
+        {
+            if (BattleManager.Instance.EnemiesInScene != null)
+            {
+                foreach (IEnemy enemy in BattleManager.Instance.EnemiesInScene)
+                {
+                    Collider2D[] colliderList = new Collider2D[20];
+                    int colliderFound = _heavyAttackPieCollider.OverlapCollider(new ContactFilter2D().NoFilter(), colliderList);
+                    if (colliderFound > 0)
+                    {
+                        for (int i = 0; i < colliderFound; i++)
+                        {
+
+                        }
+                    }
+                }
+            }
+        }
+
         private void PerformSwordFlashAttack()
         {
             _isSwordAttacking = true;
@@ -163,7 +207,7 @@ namespace HLH.Mechanics
                 attackDir.y = _faceDirection.y;
             }
             attackDir = attackDir.normalized;
-            StartCoroutine(TryHitEnemy(enemy, 0.1f, attackDir));
+            StartCoroutine(SlashAttackTryHitEnemy(enemy, 0.1f, attackDir));
 
             if (GameManager.Instance.IsEasyAttack)
             {
@@ -207,7 +251,7 @@ namespace HLH.Mechanics
             _slashParticle.Play();
         }
 
-        private IEnumerator TryHitEnemy(IEnemy target, float delay, Vector2 attackDir)
+        private IEnumerator SlashAttackTryHitEnemy(IEnemy target, float delay, Vector2 attackDir)
         {
             _animatorNormal.SetTrigger("swordAttack");
             _animatorNormal.SetFloat("swordAttackX", attackDir.x);

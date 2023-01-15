@@ -7,4 +7,6 @@ public interface IEnemy
 {
     Vector3 GetEnemyPosition();
     void TakeHit(float damageAmount, PlayerController dmgSource);
+    MonoBehaviour GetControlScript();
+    Collider2D GetCollider2D();
 } 
