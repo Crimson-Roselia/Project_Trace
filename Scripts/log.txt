@@ -1,2 +1,3 @@
 logs
 new log
+new new log
