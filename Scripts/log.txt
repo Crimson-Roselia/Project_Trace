@@ -2,3 +2,4 @@ logs
 new log
 new new log\
 new new new log
+new new new new log
