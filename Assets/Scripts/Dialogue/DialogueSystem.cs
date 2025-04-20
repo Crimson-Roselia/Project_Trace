@@ -23,7 +23,7 @@ namespace VisualNovel.Mechanics
         [SerializeField] private Sprite samSprite;
         [SerializeField] private Sprite miaSprite;
         [SerializeField] private CanvasGroup characterIntroPanel;
-        [SerializeField] private Image introCharacterBackImagel;
+        [SerializeField] private Image introCharacterBackImage;
         [SerializeField] private Image introCharacterFrontImage;
         [SerializeField] private TextMeshProUGUI introCharacterUpperText;
         [SerializeField] private TextMeshProUGUI introCharacterLowerText1;
@@ -37,13 +37,19 @@ namespace VisualNovel.Mechanics
 
         public static DialogueSystem Instance { get; private set; }
 
+        public bool IsDialoguePanelVisible { get { return dialoguePanel.alpha != 0; } }
+
 
         private void Start()
         {
             _textBuilder = new TextBuilder(dialogueText);
             _textFileReader = new TextFileReader();
+            _dialogueLines = new List<DialogueLine>();
 
             CommandManager.Instance.RegisterCommand("CreateCharacter", new Action<string>(CreateCharacter));
+            CommandManager.Instance.RegisterCommand("ShowSamIntroduction", new Action(ShowSamIntroduction));
+            CommandManager.Instance.RegisterCommand("ShowMiaIntroduction", new Action(ShowMiaIntroduction));
+            CommandManager.Instance.RegisterCommand("HideIntroduction", new Action(HideIntroduction));
         }
 
         private void Update()
@@ -52,8 +58,17 @@ namespace VisualNovel.Mechanics
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    StartCoroutine(PlayNextLine());
+                    StartCoroutine(PlayNextLine(0));
                 }
+            }
+            else
+            {
+                
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                StartDialogue("Battle 1 - Pre-Fight Hallway Dialogue");
             }
 
         }
@@ -72,12 +87,16 @@ namespace VisualNovel.Mechanics
                 }
             }
 
-            OpenDialogueUI();
-            StartCoroutine(PlayNextLine());
+            StartCoroutine(PlayNextLine(0));
         }
 
-        private IEnumerator PlayNextLine()
+        private IEnumerator PlayNextLine(float waitSec)
         {
+            if (waitSec != 0)
+            {
+                yield return new WaitForSeconds(waitSec);
+            }
+
             if (_playIndex < _dialogueLines.Count)
             {
                 DialogueLine nextLine = _dialogueLines[_playIndex];
@@ -96,26 +115,38 @@ namespace VisualNovel.Mechanics
                     nameText.text = nextLine.SpeakerName;
                     if (nextLine.SpeakerName == "SAM")
                     {
-
+                        characterImage.sprite = samSprite;
                     }
                     else if (nextLine.SpeakerName == "MIA")
                     {
-
+                        characterImage.sprite = miaSprite;
                     }
                 }
                 else
                 {
-                    nameText.text = "";
-                    characterImage.sprite = null;
+                    if (!nextLine.HasCommand())
+                    {
+                        nameText.text = "";
+                        characterImage.sprite = null;
+                    }
                 }
 
                 if (nextLine.HasDialogue())
                 {
+                    if (!IsDialoguePanelVisible)
+                    {
+                        dialoguePanel.DOFade(1, 0.3f);
+                    }
                     _textBuilder.Build(nextLine.DialogueText);
                 }
                 else
                 {
                     dialogueText.text = "";
+                }
+
+                if (_playIndex >= _dialogueLines.Count)
+                {
+                    CloseDialogueUI();
                 }
             }
             else
@@ -139,19 +170,38 @@ namespace VisualNovel.Mechanics
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(dialoguePanel.DOFade(0, 0.3f));
             introCharacterFrontImage.sprite = samSprite;
-            introCharacterBackImagel.sprite = samSprite;
+            introCharacterBackImage.sprite = samSprite;
             introCharacterUpperText.text = "OCT少尉·第三部队队长";
-            s.Append(characterIntroPanel.DOFade(1, 0.6f));
+            introCharacterLowerText1.text = "流浪的研究者·山姆";
+            introCharacterLowerText2.text = "SAM";
+            s.AppendCallback(() => introCharacterFrontImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
+            s.AppendCallback(() => introCharacterFrontImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
+            s.AppendCallback(() => introCharacterBackImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
+            s.AppendCallback(() => introCharacterBackImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
+            s.Append(characterIntroPanel.DOFade(1, 1.5f));
         }
 
         public void ShowMiaIntroduction()
         {
-
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(dialoguePanel.DOFade(0, 0.3f));
+            introCharacterFrontImage.sprite = miaSprite;
+            introCharacterBackImage.sprite = miaSprite;
+            introCharacterUpperText.text = "OCT少尉·第三部队队长";
+            introCharacterLowerText1.text = "自律战斗人偶·米娅";
+            introCharacterLowerText2.text = "AUTOBOT MIA";
+            s.AppendCallback(() => introCharacterFrontImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
+            s.AppendCallback(() => introCharacterFrontImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
+            s.AppendCallback(() => introCharacterBackImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
+            s.AppendCallback(() => introCharacterBackImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
+            s.Append(characterIntroPanel.DOFade(1, 1.5f));
         }
 
         public void HideIntroduction()
         {
-            
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(characterIntroPanel.DOFade(0, 0.6f));
+            StartCoroutine(PlayNextLine(0.2f));
         }
 
         private GameObject GetPrefabForCharacter(string characterID)
