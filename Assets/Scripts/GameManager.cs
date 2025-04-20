@@ -1,0 +1,89 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour
+{
+    [SerializeField] private Button _returnButton;
+    [SerializeField] private Button _restartButton;
+    private float _transitionColorAlpha = 0f;
+    private bool _isGamePaused = false;
+    private bool _isGameOver = false;
+    public GameState State { get; private set; }
+
+    private void Start()
+    {
+        ReturnToGame();
+    }
+
+    private void Update()
+    {
+        if (!_isGameOver)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                TogglePauseGame();
+            }
+        }
+    }
+
+    public void TogglePauseGame()
+    {
+        if (!_isGamePaused)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ReturnToGame();
+        }
+    }
+
+    public void ReturnToGame()
+    {
+        _isGamePaused = false;
+        UnfreezeTime();
+        _returnButton.gameObject.SetActive(false);
+        _restartButton.gameObject.SetActive(false);
+    }
+
+    public void PauseGame()
+    {
+        if (!_isGameOver)
+        {
+            _isGamePaused = true;
+            FreezeTime();
+            _returnButton.gameObject.SetActive(true);
+            _restartButton.gameObject.SetActive(true);
+        }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void GameOver()
+    {
+        FreezeTime();
+        _isGameOver = true;
+        _restartButton.gameObject.SetActive(true);
+    }
+
+    public void FreezeTime()
+    {
+        Time.timeScale = 0f;
+    }
+
+    public void UnfreezeTime()
+    {
+        Time.timeScale = 1f;
+    }
+}
+
+public enum GameState
+{
+    Narration, Combat
+}

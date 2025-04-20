@@ -1,0 +1,68 @@
+RangedWarrior : MonoBehaviour{
+float _detectDistance = 15f;
+float _attackDistance = 10f;
+readonly float AI_EVALUATE_INTERVAL= 0.2f;
+Node _aiTopNode;
+Collider2D _wallsTilemapCollider;
+Pathfinder _aStartPathfinder;
+Vector3 _desitinationPosition;
+PlayerController _player;
+List<Vector3> _navigationPath;
+Coroutine _navigatingProcess;
+
+void ConstructBehaviourTree();
+IEnumerator TickingBehaviourTree();
+// called before behaviour tree ticking to try and see player. would raycast towards player and if the ray is not blocked by walls then set player sighted
+bool TryRaycastDetectPlayer();
+// randomly select a reachable tile nearby in order to move towards it
+void RandomManuever();
+// iterate through pathway coordinates, control the monster to moving towards them in the right order
+IEnumerator SetNavigateThrough(List<Vector3> pathway);
+}
+
+RangedWarrior Behaviour Tree Architecture:
+
+IsPlayerInSightNode
+Type: Basic
+Success Conditions:
+player is sighted in certain range
+
+CanAttackNode
+Type: Basic
+Success Conditions:
+player is sighted && player in weapon attack range
+
+HasDestinationNode
+Type: Basic
+Success Conditions:
+monster has next destination defined by pathfinding system
+
+CasualNode
+Type: Basic
+Success Conditions:
+always success
+
+ManeuverNode
+Type: Sequence(IsPlayerInSightNode, CanAttackNode, HasDestinationNode)
+Post-evaluate Behaviors (Success or Failure):
+Set/Stop the monster script from walking towards destination
+
+AlertNode
+Type: Sequence(IsPlayerInSightNode, CanAttackNode)
+Post-evaluate Behaviors (Success or Failure):
+Set/Stop the monster script from attacking player
+
+ChaseNode
+Type: Sequence(IsPlayerInSightNode)
+Post-evaluate Behaviors (Success or Failure):
+Set/Stop the monster script from walking towards destination
+
+InFightNode
+Type: Selector(ManeuverNode, AlertNode, ChaseNode)
+Post-evaluate Behaviors (Success or Failure):
+none
+
+TopNode
+Type: Selector(InFightNode, CasualNode)
+Post-evaluate Behaviors (Success or Failure):
+none
