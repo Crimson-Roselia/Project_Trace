@@ -25,49 +25,17 @@ BlendTree:
     m_DirectBlendParameter: swordAttackDir
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 6dbad023a9549de44a15f77e81e21ae3, type: 2}
-    m_Threshold: 3
-    m_Position: {x: 1, y: 1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: swordAttackDir
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: bdc1aa21380dd51439abc7e522003558, type: 2}
-    m_Threshold: 4
-    m_Position: {x: -1, y: 1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: swordAttackDir
-    m_Mirror: 0
-  - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 4d149bf13b79ed948b0c3bd354eba778, type: 2}
-    m_Threshold: 5
+    m_Threshold: 3
     m_Position: {x: -1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: swordAttackDir
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: a0e4b650ef8a1734080bb435a91e5f3d, type: 2}
-    m_Threshold: 6
-    m_Position: {x: -1, y: -1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: swordAttackDir
-    m_Mirror: 0
-  - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 66afce201fdcf65478618e80e56ad7d1, type: 2}
-    m_Threshold: 7
+    m_Threshold: 4
     m_Position: {x: 0, y: -1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: swordAttackDir
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 1422c92abaa313b4d8e92661c8a66bc7, type: 2}
-    m_Threshold: 8
-    m_Position: {x: 1, y: -1}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: swordAttackDir
@@ -75,7 +43,7 @@ BlendTree:
   m_BlendParameter: swordAttackX
   m_BlendParameterY: swordAttackY
   m_MinThreshold: 1
-  m_MaxThreshold: 8
+  m_MaxThreshold: 4
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 1

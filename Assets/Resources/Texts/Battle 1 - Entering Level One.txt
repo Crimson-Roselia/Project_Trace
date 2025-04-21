@@ -7,8 +7,8 @@ MIA “They were testing portable reversal modules—but these versions are way 
 SAM “(frowning slightly) We need the upgrade path—the one that extends the time window, improves stability.”
 SAM “Head east. Main server room should be that way.”
 MIA “(suddenly pauses) ...Did you hear that? (Lights suddenly shift to red. An alarm blares.)”
-System Broadcast “Warning. Unauthorized intrusion detected.”
-System Broadcast “Security personnel have been deployed. All staff proceed to evacuation shelters.”
+Sys “Warning. Unauthorized intrusion detected.”
+Sys “Security personnel have been deployed. All staff proceed to evacuation shelters.”
 “(Four squads of soldiers flood into the scene, surrounding Sam and Mia.)”
 SAM “(grimly) We got trouble. Mia—get ready.”
 MIA “(steadily) Copy that. Let’s do this, Sam.”

@@ -75,12 +75,6 @@ namespace VisualNovel.Mechanics
                     }
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                StartDialogue("Battle 1 - Pre-Fight Hallway Dialogue");
-            }
-
         }
 
         public void StartDialogue(string textFileName)
@@ -137,7 +131,6 @@ namespace VisualNovel.Mechanics
                     if (!nextLine.HasCommand())
                     {
                         nameText.text = "";
-                        characterImage.sprite = null;
                     }
                 }
 

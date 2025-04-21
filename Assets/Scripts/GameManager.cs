@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     public GameState State { get; private set; }
 
     public static GameManager Instance { get; private set; }
+
+    public Action OnGameEnterBattleState;
 
     private void Awake()
     {
@@ -93,6 +96,10 @@ public class GameManager : MonoBehaviour
     public void EnterGameState(GameState state)
     {
         State = state;
+        if (state == GameState.Combat)
+        {
+            OnGameEnterBattleState?.Invoke();
+        }
     }
 }
 

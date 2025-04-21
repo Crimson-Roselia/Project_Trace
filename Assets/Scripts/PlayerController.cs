@@ -1,13 +1,7 @@
 using DG.Tweening;
 using HLH.UI;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using TMPro.EditorUtilities;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Dependencies.Sqlite;
-using UnityEditor.Profiling;
 using UnityEngine;
 
 namespace HLH.Mechanics
@@ -23,6 +17,7 @@ namespace HLH.Mechanics
         [SerializeField] private List<AudioClip> _slashAudios;
         private Rigidbody2D _rb;
         private AudioSource _audioSource;
+        public static PlayerController Instance { get; private set; }
         #endregion
 
         #region Porperties & Logic Variables
@@ -50,6 +45,7 @@ namespace HLH.Mechanics
         {
             _rb = GetComponent<Rigidbody2D>();
             _audioSource = GetComponent<AudioSource>();
+            Instance = this;
         }
 
         private void Update()
