@@ -28,6 +28,7 @@ namespace VisualNovel.Mechanics
         [SerializeField] private TextMeshProUGUI introCharacterUpperText;
         [SerializeField] private TextMeshProUGUI introCharacterLowerText1;
         [SerializeField] private TextMeshProUGUI introCharacterLowerText2;
+        [SerializeField] private Image cinematicCurtain;
         private TextBuilder _textBuilder;
         private TextFileReader _textFileReader;
         private int _playIndex = 0;
@@ -38,6 +39,11 @@ namespace VisualNovel.Mechanics
         public static DialogueSystem Instance { get; private set; }
 
         public bool IsDialoguePanelVisible { get { return dialoguePanel.alpha != 0; } }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
 
         private void Start()
@@ -54,16 +60,20 @@ namespace VisualNovel.Mechanics
 
         private void Update()
         {
-            if (_playIndex < _dialogueLines.Count)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (_playIndex < _dialogueLines.Count)
                 {
                     StartCoroutine(PlayNextLine(0));
                 }
-            }
-            else
-            {
-                
+                else
+                {
+                    if (IsDialoguePanelVisible)
+                    {
+                        CloseDialogueUI();
+                        CrossfadeIntoCombat();
+                    }
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -87,7 +97,7 @@ namespace VisualNovel.Mechanics
                 }
             }
 
-            StartCoroutine(PlayNextLine(0));
+            CrossfadeIntoNarration();
         }
 
         private IEnumerator PlayNextLine(float waitSec)
@@ -143,15 +153,6 @@ namespace VisualNovel.Mechanics
                 {
                     dialogueText.text = "";
                 }
-
-                if (_playIndex >= _dialogueLines.Count)
-                {
-                    CloseDialogueUI();
-                }
-            }
-            else
-            {
-                CloseDialogueUI();
             }
         }
 
@@ -225,6 +226,30 @@ namespace VisualNovel.Mechanics
             GameObject characterObj = Instantiate(GetPrefabForCharacter(characterID), characterPanel);
             Character character = new Character(characterID, characterObj, this);
             characters.Add(characterID, character);
+        }
+
+        private void CrossfadeIntoNarration()
+        {
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(cinematicCurtain.DOFade(1f, 1f));
+            s.AppendInterval(1f);
+            s.Append(cinematicCurtain.DOFade(0f, 1f));
+            s.AppendCallback(() => GameManager.Instance.EnterGameState(GameState.Narration));
+            s.AppendCallback(() => StartCoroutine(PlayNextLine(0)));
+        }
+
+        private void CrossfadeIntoCombat()
+        {
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(cinematicCurtain.DOFade(1f, 1f));
+            s.AppendInterval(1f);
+            s.Append(cinematicCurtain.DOFade(0f, 1f));
+            s.AppendCallback(() => GameManager.Instance.EnterGameState(GameState.Combat));
+        }
+
+        private void TransitionFadeIn()
+        {
+            cinematicCurtain.DOFade(0f, 2f);
         }
     }
 }

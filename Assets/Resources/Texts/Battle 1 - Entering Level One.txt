@@ -1,14 +1,14 @@
-MIA “Looks like the corridor’s clear. I’m accessing the console...”
+MIA “(softly) Looks like the corridor’s clear. I’m accessing the console...”
 MIA “We might find a copy of the experiment logs on this floor.”
 SAM “Don’t rush. Take it slow. Vault 17’s security systems have self-repair routines.”
 SAM “Push too fast, you’ll trigger an alert.”
-MIA “Technical docs... prototype data...”
+MIA “(fingers tapping quickly) Technical docs... prototype data...”
 MIA “They were testing portable reversal modules—but these versions are way too early-stage.”
-SAM “We need the upgrade path—the one that extends the time window, improves stability.”
+SAM “(frowning slightly) We need the upgrade path—the one that extends the time window, improves stability.”
 SAM “Head east. Main server room should be that way.”
-MIA “...Did you hear that? (Lights suddenly shift to red. An alarm blares.)”
+MIA “(suddenly pauses) ...Did you hear that? (Lights suddenly shift to red. An alarm blares.)”
 System Broadcast “Warning. Unauthorized intrusion detected.”
 System Broadcast “Security personnel have been deployed. All staff proceed to evacuation shelters.”
 “(Four squads of soldiers flood into the scene, surrounding Sam and Mia.)”
-SAM “We got trouble. Mia—get ready.”
-MIA “Copy that. Let’s do this, Sam.”
+SAM “(grimly) We got trouble. Mia—get ready.”
+MIA “(steadily) Copy that. Let’s do this, Sam.”

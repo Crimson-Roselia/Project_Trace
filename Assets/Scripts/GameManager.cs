@@ -13,9 +13,17 @@ public class GameManager : MonoBehaviour
     private bool _isGameOver = false;
     public GameState State { get; private set; }
 
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         ReturnToGame();
+        State = GameState.Combat;
     }
 
     private void Update()
@@ -80,6 +88,11 @@ public class GameManager : MonoBehaviour
     public void UnfreezeTime()
     {
         Time.timeScale = 1f;
+    }
+
+    public void EnterGameState(GameState state)
+    {
+        State = state;
     }
 }
 

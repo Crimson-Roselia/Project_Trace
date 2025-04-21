@@ -1,0 +1,25 @@
+MIA “(looking around) This place... looks like a weapons mod bay?”
+SAM “(checking the equipment) Early-stage experimental modules.Designed for rapid tactical swaps.”
+SAM “Looks like the system’s still in low-frequency standby—we can use them.”
+MIA “(beginning to tinker) Ports are compatible...”
+MIA “I can install thermal coils and a shock core—maybe even fuse an impact module.”
+SAM “(quietly) Don’t rush to load everything.”
+SAM “Pick what you can handle—what suits your rhythm.”
+MIA “(nods) ...I know. Let me get a feel for it first.”
+(Player selects upgrades and combos weapon modules)
+
+MIA “(testing movements) Faster than I expected...”
+MIA “The pacing’s different, but smoother.”
+SAM “You’re adapting well.”
+MIA “Was that a compliment?”
+SAM “Just stating facts.”
+(Mia performs a crisp, fluid combo. Pauses, exhales.)”
+MIA “I’m ready. Whatever’s waiting in the second level—I’ll handle it.”
+SAM “What’s down there isn’t messing around, Mia.”
+SAM “It was built for secrecy—which means they’ll be playing for keeps.”
+MIA “(eyes steady) Then I won’t hold back either.”
+SAM “(quietly) I know you won’t.”
+SAM “You’ve done well already.”
+SAM “(In the distance, a mechanical click. The heavy door begins to unlock and open.)”
+MIA “(moving forward) Let’s go.”
+MIA “You’re not alone in this, SAM.”

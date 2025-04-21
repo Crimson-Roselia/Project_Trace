@@ -54,8 +54,11 @@ namespace HLH.Mechanics
 
         private void Update()
         {
-            ReadInput();
-            TickFaceDirection();
+            if (GameManager.Instance.State == GameState.Combat)
+            {
+                ReadInput();
+                TickFaceDirection();
+            }
         }
 
         private void TickFaceDirection()

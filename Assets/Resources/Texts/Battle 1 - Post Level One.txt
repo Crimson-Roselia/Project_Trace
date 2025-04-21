@@ -1,0 +1,12 @@
+MIA “(quietly) Area clear. Secure for now.”
+SAM “(even tone) Your response time was faster than in the last test.”
+SAM “Good work, Mia.”
+MIA “(reloading calmly) Their tactical formation was messy—looked like a scramble.”
+MIA “They weren’t expecting anyone to breach the vault.”
+SAM “Vault 17’s real defenses aren’t here.”
+SAM “These grunts were just stalling—buying time to alert higher clearance.”
+SAM “The second level’s where the core is. Automated, military-grade security.”
+SAM “Conserve every bullet. Every second counts.”
+MIA “Understood. And if things spiral out of control...?”
+SAM “(tense, lifting the reversal device) I’ll step in. And don’t forget—we’ve still got this.”
+SAM “Let’s move.”
