@@ -11,7 +11,6 @@ namespace HLH.Mechanics
         #region References
         [SerializeField] private Animator _animatorNormal;
         [SerializeField] private SpriteRenderer _visualNomal;
-        [SerializeField] private Animator _animatorSwordAttack;
         [SerializeField] private PlayerHealthBar _hpBar;
         [SerializeField] private ParticleSystem _slashParticle;
         [SerializeField] private List<AudioClip> _slashAudios;
@@ -67,14 +66,7 @@ namespace HLH.Mechanics
 
         private void ReadInput()
         {
-            if (!_isSwordAttacking)
-            {
-                _moveDirection = Input.GetAxisRaw("Horizontal") * Vector3.right + Input.GetAxisRaw("Vertical") * Vector3.up;
-            }
-            else
-            {
-                _moveDirection = Vector3.zero;
-            }
+            _moveDirection = Input.GetAxisRaw("Horizontal") * Vector3.right + Input.GetAxisRaw("Vertical") * Vector3.up;
 
             if (_moveDirection != Vector3.zero)
             {
@@ -108,60 +100,69 @@ namespace HLH.Mechanics
         {
             if (_dashTicker < 0f)
             {
-                _dashTicker = DASH_COOLDOWN;
-
-                transform.DOMove(transform.position + DASH_DISTANCE * _moveDirection, 0.1f);
-
-                Vector3 startPoint = _visualNomal.transform.position;
-                float distanceBetweenBlur = 0.2f;
-                // 计算箭头数量
-                int blurCount = Mathf.FloorToInt(DASH_DISTANCE / distanceBetweenBlur);
-                if (blurCount <= 0) return;
-
-                for (int i = 0; i < blurCount; i++)
+                if (!_isSwordAttacking)
                 {
-                    float targetDistance = (i + 1) * distanceBetweenBlur;
+                    _dashTicker = DASH_COOLDOWN;
 
-                    GameObject newBlurObj = new GameObject("Blur");
-                    Vector3 arrowPosition = startPoint + _moveDirection * targetDistance;
-                    newBlurObj.transform.position = arrowPosition;
-                    SpriteRenderer newBlur = newBlurObj.AddComponent<SpriteRenderer>();
-                    newBlur.sortingOrder = _visualNomal.sortingOrder;
-                    newBlur.sprite = _visualNomal.sprite;
-                    newBlur.DOFade(0f, 0.4f);
-                    Destroy(newBlur.gameObject, 0.4f);
+                    transform.DOMove(transform.position + DASH_DISTANCE * _moveDirection, 0.1f);
+
+                    Vector3 startPoint = _visualNomal.transform.position;
+                    float distanceBetweenBlur = 0.2f;
+                    // 计算箭头数量
+                    int blurCount = Mathf.FloorToInt(DASH_DISTANCE / distanceBetweenBlur);
+                    if (blurCount <= 0) return;
+
+                    for (int i = 0; i < blurCount; i++)
+                    {
+                        float targetDistance = (i + 1) * distanceBetweenBlur;
+
+                        GameObject newBlurObj = new GameObject("Blur");
+                        Vector3 arrowPosition = startPoint + _moveDirection * targetDistance;
+                        newBlurObj.transform.position = arrowPosition;
+                        SpriteRenderer newBlur = newBlurObj.AddComponent<SpriteRenderer>();
+                        newBlur.sortingOrder = _visualNomal.sortingOrder;
+                        newBlur.sprite = _visualNomal.sprite;
+                        newBlur.DOFade(0f, 0.4f);
+                        Destroy(newBlur.gameObject, 0.4f);
+                    }
                 }
             }
         }
 
         private void FixedUpdate()
         {
-            _rb.MovePosition(_rb.position + (Vector2)_moveDirection * MoveSpeed * Time.fixedDeltaTime);
+            if (GameManager.Instance.State == GameState.Combat)
+            {
+                if (!_isSwordAttacking)
+                {
+                    _rb.MovePosition(_rb.position + (Vector2)_moveDirection * MoveSpeed * Time.fixedDeltaTime);
+                }
+            }
         }
 
         private void PerformSwordFlashAttack()
         {
-            PlaySlashParticleEffect();
-            _audioSource.PlayOneShot(_slashAudios[UnityEngine.Random.Range(0, _slashAudios.Count)]);
+            _isSwordAttacking = true;
 
-            float attackDirX; // x of the Vector2 representing direction from player to hitpoint
-            float attackDirY; // y of the Vector2 representing direction from player to hitpoint
+            Vector2 attackDir;
             if (TryGetNearbyEnemy(out IEnemy enemy, 2.5f))
             {
-                attackDirX = enemy.GetEnemyPosition().x - transform.position.x;
-                attackDirY = enemy.GetEnemyPosition().y - transform.position.y;
-                StartCoroutine(AboutToHitEnemy(enemy, 0.15f));
+                attackDir.x = enemy.GetEnemyPosition().x - transform.position.x;
+                attackDir.y = enemy.GetEnemyPosition().y - transform.position.y;
             }
             else
             {
-                attackDirX = _faceDirection.x;
-                attackDirY = _faceDirection.y;
+                attackDir.x = _faceDirection.x;
+                attackDir.y = _faceDirection.y;
             }
-            _animatorNormal.gameObject.SetActive(false);
-            _animatorSwordAttack.gameObject.SetActive(true);
-            _animatorSwordAttack.SetFloat("swordAttackX", attackDirX);
-            _animatorSwordAttack.SetFloat("swordAttackY", attackDirY);
-            StartCoroutine(SwitchToNormalVisualIn(0.45f));
+            attackDir = attackDir.normalized;
+            StartCoroutine(TryHitEnemy(enemy, 0.1f, attackDir));
+
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(transform.DOJump(transform.position + (Vector3)attackDir, 0.01f, 1, 0.35f));
+            s.AppendInterval(0.2F);
+            s.Append(transform.DOJump(transform.position, 0.15f, 1, 0.25f));
+            s.AppendCallback(() => _isSwordAttacking = false);
         }
 
         private void PlaySlashParticleEffect()
@@ -185,25 +186,15 @@ namespace HLH.Mechanics
             _slashParticle.Play();
         }
 
-        private IEnumerator AboutToHitEnemy(IEnemy target, float delay)
+        private IEnumerator TryHitEnemy(IEnemy target, float delay, Vector2 attackDir)
         {
+            _animatorNormal.SetTrigger("swordAttack");
+            _animatorNormal.SetFloat("swordAttackX", attackDir.x);
+            _animatorNormal.SetFloat("swordAttackY", attackDir.y);
+            PlaySlashParticleEffect();
             yield return new WaitForSeconds(delay);
-            target?.TakeHit(_swordDamage);
-
-        }
-
-        private void ActivateNormalVisual()
-        {
-            _animatorNormal.gameObject.SetActive(true);
-            _animatorSwordAttack.gameObject.SetActive(false);
-        }
-
-        private IEnumerator SwitchToNormalVisualIn(float waitSecs)
-        {
-            _isSwordAttacking = true;
-            yield return new WaitForSeconds(waitSecs);
-            ActivateNormalVisual();
-            _isSwordAttacking = false;
+            target?.TakeHit(_swordDamage, this);
+            _audioSource.PlayOneShot(_slashAudios[Random.Range(0, _slashAudios.Count)]);
         }
 
         private bool TryGetNearbyEnemy(out IEnemy nearestEnemy, float detectDistance)

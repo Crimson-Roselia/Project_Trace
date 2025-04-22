@@ -1,3 +1,4 @@
+using HLH.Mechanics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,5 +6,5 @@ using UnityEngine;
 public interface IEnemy
 {
     Vector3 GetEnemyPosition();
-    void TakeHit(float damageAmount);
+    void TakeHit(float damageAmount, PlayerController dmgSource);
 } 

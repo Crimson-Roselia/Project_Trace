@@ -97,11 +97,6 @@ namespace HLH.Objects
                     {
                         return;
                     }
-                    else if (type == BulletType.PlayerBullet)
-                    {
-                        enemy.TakeHit(damage);
-                        AudioSource.Play();
-                    }
                 }
 
                 if (type == BulletType.MonsterBullet)

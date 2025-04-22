@@ -35,6 +35,7 @@ namespace VisualNovel.Mechanics
         private List<DialogueLine> _dialogueLines;
         private readonly string _prefabFolderInResources = "Characters";
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
+        private bool _isPlayingDialogue;
 
         public static DialogueSystem Instance { get; private set; }
 
@@ -62,16 +63,19 @@ namespace VisualNovel.Mechanics
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (_playIndex < _dialogueLines.Count)
+                if (!_isPlayingDialogue)
                 {
-                    StartCoroutine(PlayNextLine(0));
-                }
-                else
-                {
-                    if (IsDialoguePanelVisible)
+                    if (_playIndex < _dialogueLines.Count)
                     {
-                        CloseDialogueUI();
-                        CrossfadeIntoCombat();
+                        StartCoroutine(PlayNextLine(0));
+                    }
+                    else
+                    {
+                        if (IsDialoguePanelVisible)
+                        {
+                            CloseDialogueUI();
+                            CrossfadeIntoCombat();
+                        }
                     }
                 }
             }
@@ -96,6 +100,8 @@ namespace VisualNovel.Mechanics
 
         private IEnumerator PlayNextLine(float waitSec)
         {
+            _isPlayingDialogue = true;
+
             if (waitSec != 0)
             {
                 yield return new WaitForSeconds(waitSec);
@@ -146,6 +152,8 @@ namespace VisualNovel.Mechanics
                 {
                     dialogueText.text = "";
                 }
+
+                _isPlayingDialogue = false;
             }
         }
 
@@ -161,6 +169,7 @@ namespace VisualNovel.Mechanics
 
         public void ShowSamIntroduction()
         {
+            _isPlayingDialogue = true;
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(dialoguePanel.DOFade(0, 0.3f));
             introCharacterFrontImage.sprite = samSprite;
@@ -177,6 +186,7 @@ namespace VisualNovel.Mechanics
 
         public void ShowMiaIntroduction()
         {
+            _isPlayingDialogue = true;
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(dialoguePanel.DOFade(0, 0.3f));
             introCharacterFrontImage.sprite = miaSprite;
@@ -195,6 +205,7 @@ namespace VisualNovel.Mechanics
         {
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(characterIntroPanel.DOFade(0, 0.6f));
+            s.AppendCallback(() => _isPlayingDialogue = false);
             StartCoroutine(PlayNextLine(0.2f));
         }
 

@@ -260,12 +260,24 @@ public class RangedWarrior : MonoBehaviour, IEnemy
         return transform.position;
     }
     
-    public void TakeHit(float damageAmount)
+    public void TakeHit(float damageAmount, PlayerController dmgSource)
     {
         _health -= damageAmount;
         _visual.color = Color.red;
         _visual.DOBlendableColor(Color.white, 1f);
-        transform.DOJump(transform.position - 0.5f * (Vector3)_playerDirection, 0.5f, 1, 0.4f);
+
+        Vector3Int currentCell = _aStarPathfinder.WorldToCell(transform.position);
+        Vector3Int backCell = _aStarPathfinder.WorldToCell(transform.position - (Vector3)_playerDirection.normalized);
+        List<Vector3Int> path = _aStarPathfinder.FindPath(currentCell, backCell);
+        if (path.Count > 0)
+        {
+            transform.DOJump(transform.position - (Vector3)_playerDirection.normalized, 0.5f, 1, 0.4f);
+        }
+        else
+        {
+            transform.DOJump(transform.position, 0.5f, 1, 0.4f);
+        }
+
 
         _animator.SetTrigger("hit");
         
