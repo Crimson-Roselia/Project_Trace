@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 634186504203575757}
   - component: {fileID: 5899590003344463043}
   - component: {fileID: 2687987298786083737}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shiny
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5015,7 +5015,7 @@ GameObject:
   - component: {fileID: 959397291265625500}
   - component: {fileID: 1303841856417458915}
   - component: {fileID: 2982771310379939561}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 'Shiny Slash '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9906,8 +9906,8 @@ GameObject:
   - component: {fileID: 5582877818903463156}
   - component: {fileID: 8276974473188457584}
   - component: {fileID: -3867700515392177224}
-  m_Layer: 0
-  m_Name: Monster Bullet
+  m_Layer: 8
+  m_Name: Slash Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10018,7 +10018,7 @@ GameObject:
   - component: {fileID: 2224411656839610443}
   - component: {fileID: 5017363458038288856}
   - component: {fileID: 739941860221484968}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10100,7 +10100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3904111556798566091}
   - component: {fileID: 5515041569776560897}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BG Plate
   m_TagString: Untagged
   m_Icon: {fileID: 0}

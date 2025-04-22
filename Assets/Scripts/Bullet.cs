@@ -91,9 +91,9 @@ namespace HLH.Objects
                 {
                     player.ReduceHealthPoint(damage);
                 }
-                if (other.TryGetComponent<IEnemy>(out IEnemy enemy))
+                if (other.tag == "Enemy")
                 {
-                    if (type == BulletType.MonsterBullet)
+                    if (type == BulletType.MonsterBullet || other.TryGetComponent<BattleRoom>(out BattleRoom room))
                     {
                         return;
                     }
@@ -105,7 +105,7 @@ namespace HLH.Objects
                 }
 
                 _visual.gameObject.SetActive(false);
-                Destroy(gameObject, 1f);
+                Destroy(gameObject, 0);
             }
         }
 
