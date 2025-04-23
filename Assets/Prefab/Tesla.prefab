@@ -153,6 +153,6 @@ MonoBehaviour:
   _arcActivationInterval: 6
   _arcDuration: 3
   _arcDamage: 10
-  _arcSegments: 10
+  _arcSegments: 4
   _arcAmplitude: 0.5
   _arcSprite: {fileID: 21300000, guid: f1b977a914a37984aa19e7fee5bdcb60, type: 3}

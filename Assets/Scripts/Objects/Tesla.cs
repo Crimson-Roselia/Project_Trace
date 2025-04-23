@@ -1,3 +1,4 @@
+using HLH.Mechanics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -121,7 +122,10 @@ public class Tesla : MonoBehaviour
         if (_arcTimer >= _arcActivationInterval)
         {
             _arcTimer = 0;
-            StartCoroutine(ActivateArcs());
+            if (Vector3.Distance(PlayerController.Instance.transform.position, transform.position) < 30.0f)
+            {
+                StartCoroutine(ActivateArcs());
+            }
         }
     }
 
