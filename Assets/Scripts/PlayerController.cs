@@ -221,6 +221,10 @@ namespace HLH.Mechanics
                 return;
             }
 
+            _visualNomal.color = Color.red;
+            _visualNomal.DOBlendableColor(Color.white, 1f);
+            transform.DOJump(transform.position, 0.5f, 1, 0.4f);
+
             _health -= reducedAmount;
             if (_health <= 0)
             {

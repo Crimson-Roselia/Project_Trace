@@ -242,7 +242,7 @@ namespace VisualNovel.Mechanics
             s.AppendCallback(() => StartCoroutine(PlayNextLine(0)));
         }
 
-        private void CrossfadeIntoCombat()
+        public void CrossfadeIntoCombat()
         {
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(cinematicCurtain.DOFade(1f, 1f));
