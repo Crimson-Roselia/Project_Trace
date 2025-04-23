@@ -104,7 +104,11 @@ namespace HLH.Mechanics
                 {
                     _dashTicker = DASH_COOLDOWN;
 
-                    transform.DOMove(transform.position + DASH_DISTANCE * _moveDirection, 0.1f);
+                    DG.Tweening.Sequence s = DOTween.Sequence();
+                    _isInvincible = true;
+                    s.Append(transform.DOMove(transform.position + DASH_DISTANCE * _moveDirection, 0.2f));
+                    s.AppendInterval(0.05f);
+                    s.AppendCallback(() => _isInvincible = false);
 
                     Vector3 startPoint = _visualNomal.transform.position;
                     float distanceBetweenBlur = 0.2f;
@@ -165,6 +169,11 @@ namespace HLH.Mechanics
             s.AppendCallback(() => _isSwordAttacking = false);
         }
 
+        public void SetInvincible(bool isInvincible)
+        {
+            _isInvincible = isInvincible;
+        }
+
         private void PlaySlashParticleEffect()
         {
             if (_faceDirection.x > 0)
@@ -214,7 +223,7 @@ namespace HLH.Mechanics
             return false;
         }
 
-        public void ReduceHealthPoint(float reducedAmount)
+        public void ReduceHealthPoint(float reducedAmount, bool shockOnHit)
         {
             if (_isInvincible)
             {
@@ -223,7 +232,10 @@ namespace HLH.Mechanics
 
             _visualNomal.color = Color.red;
             _visualNomal.DOBlendableColor(Color.white, 1f);
-            transform.DOJump(transform.position, 0.5f, 1, 0.4f);
+            if (shockOnHit)
+            {
+                transform.DOJump(transform.position, 0.5f, 1, 0.4f);
+            }
 
             _health -= reducedAmount;
             if (_health <= 0)

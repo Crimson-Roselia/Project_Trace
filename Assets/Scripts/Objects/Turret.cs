@@ -21,7 +21,7 @@ public class Turret : MonoBehaviour
 
         if (canAttack && _attackCooldown > _attackInterval)
         {
-            Vector2 fireDirection = (PlayerController.Instance.transform.position - transform.position).normalized;
+            Vector2 fireDirection = Vector2.left;
             Bullet bullet = Instantiate(_bulletPrefab, (Vector2)transform.position + fireDirection * 0.5f, Quaternion.identity);
             bullet.OnBulletFired(fireDirection, _bulletFireSpeed, 0.35f);
             _attackCooldown = 0f;

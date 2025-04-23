@@ -18,7 +18,7 @@ public class ArcSegment : MonoBehaviour
     {
         if (collision.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            player.ReduceHealthPoint(_damage);
+            player.ReduceHealthPoint(_damage, true);
         }
     }
 }

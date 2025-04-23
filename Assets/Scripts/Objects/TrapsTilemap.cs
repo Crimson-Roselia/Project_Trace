@@ -10,7 +10,7 @@ public class TrapsTilemap : MonoBehaviour
     {
         if (collision.collider.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            player.ReduceHealthPoint(10f);
+            player.ReduceHealthPoint(10f, false);
         }
     }
 
@@ -18,7 +18,7 @@ public class TrapsTilemap : MonoBehaviour
     {
         if (collision.collider.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            player.ReduceHealthPoint(10f);
+            player.ReduceHealthPoint(10f, false);
         }
     }
 }

@@ -89,7 +89,7 @@ namespace HLH.Objects
             {
                 if (other.TryGetComponent<PlayerController>(out PlayerController player))
                 {
-                    player.ReduceHealthPoint(damage);
+                    player.ReduceHealthPoint(damage, true);
                 }
                 if (other.tag == "Enemy")
                 {
