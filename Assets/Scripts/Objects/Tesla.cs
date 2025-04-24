@@ -16,8 +16,7 @@ public class Tesla : MonoBehaviour
     [SerializeField] private float _arcActivationInterval = 6f;
     [SerializeField] private float _arcDuration = 3f;
     [SerializeField] private float _arcDamage = 10f;
-    [SerializeField] private int _arcSegments = 10;
-    [SerializeField] private float _arcAmplitude = 0.5f;
+    [SerializeField] private float _laserWidth = 0.5f;
     [SerializeField] private Sprite _arcSprite;
 
     private List<Tesla> _linkedCoils = new List<Tesla>();
@@ -148,7 +147,8 @@ public class Tesla : MonoBehaviour
         {
             if (_linkedCoils[i] != null)
             {
-                GameObject arcParent = new GameObject("ArcSegments");
+                // 创建激光电弧父对象
+                GameObject arcParent = new GameObject("LaserArc");
                 arcParent.transform.SetParent(transform);
                 _arcObjects.Add(arcParent);
 
@@ -157,50 +157,60 @@ public class Tesla : MonoBehaviour
                 Vector3 direction = (endPos - startPos).normalized;
                 float distance = Vector3.Distance(startPos, endPos);
 
-                // 创建电弧段
-                for (int j = 0; j < _arcSegments; j++)
-                {
-                    GameObject arcSegment = new GameObject("ArcSegment");
-                    arcSegment.transform.SetParent(arcParent.transform);
-                    
-                    SpriteRenderer sr = arcSegment.AddComponent<SpriteRenderer>();
-                    sr.sprite = _arcSprite;
-                    sr.color = new Color(_linkColor.r, _linkColor.g, _linkColor.b, 0.8f);
-                    sr.sortingOrder = 5;
-                    
-                    // 添加碰撞器用于伤害检测
-                    BoxCollider2D collider = arcSegment.AddComponent<BoxCollider2D>();
-                    collider.isTrigger = true;
-                    
-                    // 添加电弧脚本组件
-                    ArcSegment arcScript = arcSegment.AddComponent<ArcSegment>();
-                    arcScript.Initialize(_arcDamage, this);
-                    
-                    // 设置位置和旋转
-                    float segmentLength = distance / _arcSegments;
-                    float t = (j + 0.5f) / _arcSegments;
-                    
-                    // 添加一些随机性使电弧看起来更自然
-                    Vector3 offset = new Vector3(
-                        Random.Range(-_arcAmplitude, _arcAmplitude),
-                        Random.Range(-_arcAmplitude, _arcAmplitude),
-                        0
-                    );
-                    
-                    // 确保偏移垂直于方向
-                    Vector3 perpendicular = new Vector3(-direction.y, direction.x, 0);
-                    offset = Vector3.Project(offset, perpendicular);
-                    
-                    arcSegment.transform.position = Vector3.Lerp(startPos, endPos, t) + offset;
-                    
-                    // 设置大小
-                    arcSegment.transform.localScale = new Vector3(segmentLength, _lineWidth * 3, 1);
-                    
-                    // 设置旋转
-                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    arcSegment.transform.rotation = Quaternion.Euler(0, 0, angle);
-                }
+                // 使用LineRenderer创建激光
+                LineRenderer laserRenderer = arcParent.AddComponent<LineRenderer>();
+                laserRenderer.positionCount = 2;
+                laserRenderer.SetPosition(0, startPos);
+                laserRenderer.SetPosition(1, endPos);
+                laserRenderer.startWidth = _laserWidth;
+                laserRenderer.endWidth = _laserWidth;
+                laserRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                laserRenderer.startColor = new Color(_linkColor.r, _linkColor.g, _linkColor.b, 0.8f);
+                laserRenderer.endColor = new Color(_linkColor.r, _linkColor.g, _linkColor.b, 0.8f);
+                laserRenderer.sortingOrder = 5;
+
+                // 为激光添加碰撞检测
+                GameObject colliderObj = new GameObject("LaserCollider");
+                colliderObj.transform.SetParent(arcParent.transform);
+                
+                // 创建Box碰撞器来检测玩家
+                BoxCollider2D collider = colliderObj.AddComponent<BoxCollider2D>();
+                collider.isTrigger = true;
+                
+                // 设置碰撞器的大小和位置
+                collider.size = new Vector2(distance, _laserWidth);
+                colliderObj.transform.position = (startPos + endPos) / 2;
+                
+                // 设置碰撞器的旋转以匹配激光方向
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                colliderObj.transform.rotation = Quaternion.Euler(0, 0, angle);
+                
+                // 添加电弧脚本组件
+                ArcSegment arcScript = colliderObj.AddComponent<ArcSegment>();
+                arcScript.Initialize(_arcDamage, this);
+                
+                // 可选：添加闪烁效果
+                StartCoroutine(FlickerLaser(laserRenderer));
             }
+        }
+    }
+
+    // 激光闪烁效果
+    private IEnumerator FlickerLaser(LineRenderer laser)
+    {
+        float flickerTime = 0.1f;
+        Color originalColor = laser.startColor;
+        Color dimColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.3f);
+        
+        while (_areArcsActive)
+        {
+            laser.startColor = originalColor;
+            laser.endColor = originalColor;
+            yield return new WaitForSeconds(flickerTime);
+            
+            laser.startColor = dimColor;
+            laser.endColor = dimColor;
+            yield return new WaitForSeconds(flickerTime * 0.5f);
         }
     }
 
