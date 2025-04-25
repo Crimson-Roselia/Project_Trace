@@ -48,6 +48,8 @@ namespace HLH.Mechanics
             Instance = this;
         }
 
+
+
         private void Update()
         {
             if (GameManager.Instance.State == GameState.Combat)
@@ -163,11 +165,20 @@ namespace HLH.Mechanics
             attackDir = attackDir.normalized;
             StartCoroutine(TryHitEnemy(enemy, 0.1f, attackDir));
 
-            DG.Tweening.Sequence s = DOTween.Sequence();
-            s.Append(transform.DOJump(transform.position + (Vector3)attackDir, 0.01f, 1, 0.35f));
-            s.AppendInterval(0.2F);
-            s.Append(transform.DOJump(transform.position, 0.15f, 1, 0.25f));
-            s.AppendCallback(() => _isSwordAttacking = false);
+            if (GameManager.Instance.IsEasyAttack)
+            {
+                DG.Tweening.Sequence s = DOTween.Sequence();
+                s.AppendInterval(0.8F);
+                s.AppendCallback(() => _isSwordAttacking = false);
+            }
+            else
+            {
+                DG.Tweening.Sequence s = DOTween.Sequence();
+                s.Append(transform.DOJump(transform.position + (Vector3)attackDir, 0.01f, 1, 0.35f));
+                s.AppendInterval(0.2F);
+                s.Append(transform.DOJump(transform.position, 0.15f, 1, 0.25f));
+                s.AppendCallback(() => _isSwordAttacking = false);
+            }
         }
 
         public void SetInvincible(bool isInvincible)
@@ -246,7 +257,7 @@ namespace HLH.Mechanics
             _health -= reducedAmount;
             if (_health <= 0)
             {
-                Debug.Log("Game Over");
+                GameManager.Instance.GameOver();
             }
 
             if (_hpBar != null)

@@ -5,13 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using VisualNovel.Mechanics;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private Button _returnButton;
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _resetGameButton;
+    [SerializeField] private Button _easyAttackButton;
     [SerializeField] private List<Transform> _spawnLocations;
+    [SerializeField] private Sprite _checkboxCheckSprite;
+    [SerializeField] private Sprite _checkboxUncheckSprite;
     private float _transitionColorAlpha = 0f;
     private bool _isGamePaused = false;
     private bool _isGameOver = false;
@@ -20,6 +24,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public Action OnGameEnterBattleState;
+    public bool IsEasyAttack = false;
 
     private void Awake()
     {
@@ -32,6 +37,9 @@ public class GameManager : MonoBehaviour
         State = GameState.Combat;
 
         int gameProgress = PlayerPrefs.GetInt("GameProgress");
+        IsEasyAttack = PlayerPrefs.GetInt("IsEasyAttack") == 1 ? true : false;
+        _easyAttackButton.GetComponent<Image>().sprite = IsEasyAttack ? _checkboxCheckSprite : _checkboxUncheckSprite;
+
         PlayerController.Instance.transform.position = _spawnLocations[gameProgress].transform.position;
     }
 
@@ -65,6 +73,7 @@ public class GameManager : MonoBehaviour
         _returnButton.gameObject.SetActive(false);
         _restartButton.gameObject.SetActive(false);
         _resetGameButton.gameObject.SetActive(false);
+        _easyAttackButton.gameObject.SetActive(false);
     }
 
     public void PauseGame()
@@ -76,6 +85,7 @@ public class GameManager : MonoBehaviour
             _returnButton.gameObject.SetActive(true);
             _restartButton.gameObject.SetActive(true);
             _resetGameButton.gameObject.SetActive(true);
+            _easyAttackButton.gameObject.SetActive(true);
         }
     }
 
@@ -86,9 +96,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        FreezeTime();
         _isGameOver = true;
-        _restartButton.gameObject.SetActive(true);
+        DialogueSystem.Instance.FadeOutOnGameOver();
     }
 
     public void FreezeTime()
@@ -114,6 +123,21 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("GameProgress", 0);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ToggleEasyAttackButton()
+    {
+        IsEasyAttack = !IsEasyAttack;
+        if (IsEasyAttack)
+        {
+            _easyAttackButton.GetComponent<Image>().sprite = _checkboxCheckSprite;
+            PlayerPrefs.SetInt("IsEasyAttack", 1);
+        }
+        else
+        {
+            _easyAttackButton.GetComponent<Image>().sprite = _checkboxUncheckSprite;
+            PlayerPrefs.SetInt("IsEasyAttack", 0);
+        }
     }
 }
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VisualNovel.IO;
 using VisualNovel.Mechanics.Data;
@@ -247,6 +248,14 @@ namespace VisualNovel.Mechanics
             s.AppendInterval(1f);
             s.Append(cinematicCurtain.DOFade(0f, 1f));
             s.AppendCallback(() => GameManager.Instance.EnterGameState(GameState.Combat));
+        }
+
+        public void FadeOutOnGameOver()
+        {
+            DG.Tweening.Sequence s = DOTween.Sequence();
+            s.Append(cinematicCurtain.DOFade(1f, 0.4f));
+            s.AppendInterval(0.3f);
+            s.AppendCallback(() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
         }
 
         private void TransitionFadeIn()

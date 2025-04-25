@@ -15,7 +15,7 @@ namespace HLH.Objects
         protected float maxFlyDistance = 50f;
         protected Vector3 spawnPosition;
         protected float flySpd;
-        protected float damage = 25f;
+        protected float damage = 10f;
         protected AudioSource AudioSource;
         public BulletType type;
         private bool isActivated = false;
