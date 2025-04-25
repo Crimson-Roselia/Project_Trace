@@ -284,6 +284,7 @@ public class RangedWarrior : MonoBehaviour, IEnemy
         
         if (_health <= 0)
         {
+            Instantiate(_medicinePrefab, transform.position, Quaternion.identity);
             Destroy(gameObject, 0.2f);
         }
     }
@@ -429,7 +430,6 @@ public class RangedWarrior : MonoBehaviour, IEnemy
 
     private void OnDestroy()
     {
-        Instantiate(_medicinePrefab, transform.position, Quaternion.identity);
         BattleManager.Instance.RemoveEnemy(this);
     }
 }
