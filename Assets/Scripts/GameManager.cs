@@ -1,3 +1,4 @@
+using HLH.Mechanics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Button _returnButton;
     [SerializeField] private Button _restartButton;
+    [SerializeField] private Button _resetGameButton;
+    [SerializeField] private List<Transform> _spawnLocations;
     private float _transitionColorAlpha = 0f;
     private bool _isGamePaused = false;
     private bool _isGameOver = false;
@@ -27,6 +30,9 @@ public class GameManager : MonoBehaviour
     {
         ReturnToGame();
         State = GameState.Combat;
+
+        int gameProgress = PlayerPrefs.GetInt("GameProgress");
+        PlayerController.Instance.transform.position = _spawnLocations[gameProgress].transform.position;
     }
 
     private void Update()
@@ -58,6 +64,7 @@ public class GameManager : MonoBehaviour
         UnfreezeTime();
         _returnButton.gameObject.SetActive(false);
         _restartButton.gameObject.SetActive(false);
+        _resetGameButton.gameObject.SetActive(false);
     }
 
     public void PauseGame()
@@ -68,12 +75,13 @@ public class GameManager : MonoBehaviour
             FreezeTime();
             _returnButton.gameObject.SetActive(true);
             _restartButton.gameObject.SetActive(true);
+            _resetGameButton.gameObject.SetActive(true);
         }
     }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void GameOver()
@@ -100,6 +108,12 @@ public class GameManager : MonoBehaviour
         {
             OnGameEnterBattleState?.Invoke();
         }
+    }
+
+    public void ResetGameProcess()
+    {
+        PlayerPrefs.SetInt("GameProgress", 0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
 

@@ -10,6 +10,7 @@ public class BattleRoom : MonoBehaviour
     [SerializeField] private GameObject[] _enemyPrefabs;
     [SerializeField] private Transform _enemyParent;
     [SerializeField] public List<BattleWave> BattleWaves = new List<BattleWave>();
+    [SerializeField] public bool BattleAutoStartsOnEnter = false;
     
     [Header("战斗事件")]
     public UnityEvent OnBattleStart;
@@ -19,13 +20,14 @@ public class BattleRoom : MonoBehaviour
     
     private int _currentWaveIndex = -1;
     private List<GameObject> _currentWaveEnemies = new List<GameObject>();
-    private bool _battleActive = false;
+    private bool _battleActive { get; set; }
     private Dictionary<string, GameObject> _enemyPrefabLookup = new Dictionary<string, GameObject>();
     private BoxCollider2D _roomTrigger;
 
     void Awake()
     {
         _roomTrigger = GetComponent<BoxCollider2D>();
+        _battleActive = false;
 
         // 创建敌人预制体查询字典
         if (_enemyPrefabs != null)
@@ -55,9 +57,9 @@ public class BattleRoom : MonoBehaviour
         GameManager.Instance.OnGameEnterBattleState -= StartBattle;
     }
 
-    private void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (BattleAutoStartsOnEnter)
         {
             StartBattle();
         }
@@ -196,9 +198,7 @@ public class BattleRoom : MonoBehaviour
     /// 结束战斗
     /// </summary>
     private void EndBattle()
-    {
-        _battleActive = false;
-        
+    {  
         // 触发战斗结束事件
         OnBattleEnd?.Invoke();
     }

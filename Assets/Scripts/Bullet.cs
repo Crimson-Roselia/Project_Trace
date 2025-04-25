@@ -27,10 +27,6 @@ namespace HLH.Objects
             _visual.gameObject.SetActive(false);
         }
 
-        protected virtual void Update()
-        {
-
-        }
 
         private void FixedUpdate()
         {
@@ -38,15 +34,15 @@ namespace HLH.Objects
             {
                 _rb2D.MovePosition(transform.position + flyDir * flySpd * Time.fixedDeltaTime);
                 _visual.gameObject.SetActive(true);
+
+                if (Vector3.Distance(transform.position, spawnPosition) > maxFlyDistance)
+                {
+                    Destroy(gameObject);
+                }
             }
             else
             {
                 _visual.gameObject.SetActive(false);
-            }
-
-            if (Vector3.Distance(transform.position, spawnPosition) > maxFlyDistance)
-            {
-                Destroy(gameObject);
             }
         }
 
@@ -87,6 +83,7 @@ namespace HLH.Objects
         {
             if (isActivated)
             {
+
                 if (other.TryGetComponent<PlayerController>(out PlayerController player))
                 {
                     player.ReduceHealthPoint(damage, true);
@@ -98,12 +95,17 @@ namespace HLH.Objects
                         return;
                     }
                 }
+                if (other.tag == "Trigger")
+                {
+                    return;
+                }
 
                 if (type == BulletType.MonsterBullet)
                 {
                     //Instantiate(_bulletScatterEffectPrefab, transform.position, _bulletScatterEffectPrefab.transform.rotation);
                 }
 
+                Debug.Log(other.gameObject);
                 _visual.gameObject.SetActive(false);
                 Destroy(gameObject, 0);
             }

@@ -16,6 +16,7 @@ public class RangedWarrior : MonoBehaviour, IEnemy
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _visual;
     [SerializeField] public TextMeshProUGUI _aiDebugText;
+    [SerializeField] private Medicine _medicinePrefab;
     
     public const float AI_EVALUATE_INTERVAL = 0.1f;
     private Node _aiTopNode;
@@ -243,7 +244,7 @@ public class RangedWarrior : MonoBehaviour, IEnemy
             if (i == 0)
             {
                 yield return new WaitForSeconds(0.4f);
-                bullet.OnBulletFired(fireDirection, rapidFireBulletSpeed, 0.35f);
+                bullet.OnBulletFired(fireDirection, rapidFireBulletSpeed);
             }
             else
             {
@@ -428,6 +429,7 @@ public class RangedWarrior : MonoBehaviour, IEnemy
 
     private void OnDestroy()
     {
+        Instantiate(_medicinePrefab, transform.position, Quaternion.identity);
         BattleManager.Instance.RemoveEnemy(this);
     }
 }

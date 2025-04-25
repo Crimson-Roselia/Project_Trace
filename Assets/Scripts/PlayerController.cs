@@ -2,6 +2,7 @@ using DG.Tweening;
 using HLH.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace HLH.Mechanics
@@ -223,6 +224,11 @@ namespace HLH.Mechanics
             return false;
         }
 
+        public void AddHealth(float amount)
+        {
+            _health += amount;
+        }
+
         public void ReduceHealthPoint(float reducedAmount, bool shockOnHit)
         {
             if (_isInvincible)
@@ -256,5 +262,7 @@ namespace HLH.Mechanics
             yield return new WaitForSeconds(1f);
             _isInvincible = false;
         }
+
+
     }
 }

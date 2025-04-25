@@ -100,7 +100,6 @@ namespace VisualNovel.Mechanics
 
         private IEnumerator PlayNextLine(float waitSec)
         {
-            _isPlayingDialogue = true;
 
             if (waitSec != 0)
             {
@@ -152,8 +151,6 @@ namespace VisualNovel.Mechanics
                 {
                     dialogueText.text = "";
                 }
-
-                _isPlayingDialogue = false;
             }
         }
 
@@ -182,6 +179,7 @@ namespace VisualNovel.Mechanics
             s.AppendCallback(() => introCharacterBackImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
             s.AppendCallback(() => introCharacterBackImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
             s.Append(characterIntroPanel.DOFade(1, 1.5f));
+            s.AppendCallback(() => _isPlayingDialogue = false);
         }
 
         public void ShowMiaIntroduction()
@@ -199,13 +197,13 @@ namespace VisualNovel.Mechanics
             s.AppendCallback(() => introCharacterBackImage.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f));
             s.AppendCallback(() => introCharacterBackImage.rectTransform.DOScale(new Vector3(1, 1, 1), 1.2f));
             s.Append(characterIntroPanel.DOFade(1, 1.5f));
+            s.AppendCallback(() => _isPlayingDialogue = false);
         }
 
         public void HideIntroduction()
         {
             DG.Tweening.Sequence s = DOTween.Sequence();
             s.Append(characterIntroPanel.DOFade(0, 0.6f));
-            s.AppendCallback(() => _isPlayingDialogue = false);
             StartCoroutine(PlayNextLine(0.2f));
         }
 

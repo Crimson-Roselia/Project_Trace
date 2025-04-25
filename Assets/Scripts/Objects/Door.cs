@@ -6,6 +6,7 @@ using VisualNovel.Mechanics;
 
 public class Door : MonoBehaviour
 {
+    [SerializeField] private int _targetRoomIndex;
     private bool _isTriggered = false;
     private Transform _destination;
 
@@ -30,5 +31,11 @@ public class Door : MonoBehaviour
     public void TeleportPlayer()
     {
         PlayerController.Instance.transform.position = _destination.position;
+        PlayerPrefs.SetInt("GameProgress", _targetRoomIndex);
+    }
+
+    public void SetActive()
+    {
+        gameObject.SetActive(true);
     }
 }

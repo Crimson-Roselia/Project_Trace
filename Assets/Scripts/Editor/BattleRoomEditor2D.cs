@@ -69,7 +69,10 @@ public class BattleRoomEditor2D : Editor
         EditorGUI.EndDisabledGroup();
         
         EditorGUILayout.Space(10);
-        
+        SerializedProperty BattleAutoStartsOnEnter = serializedObject.FindProperty("BattleAutoStartsOnEnter");
+        EditorGUILayout.PropertyField(BattleAutoStartsOnEnter, new GUIContent("进入房间战斗自动开始"));
+        EditorGUILayout.Space(10);
+
         // 敌人预制体设置
         EditorGUILayout.LabelField("敌人预制体设置", _headerStyle);
         EditorGUILayout.PropertyField(_enemyPrefabsProp, new GUIContent("敌人预制体列表"));
@@ -106,7 +109,7 @@ public class BattleRoomEditor2D : Editor
             _selectedSpawnIndex = -1;
             serializedObject.ApplyModifiedProperties();
         }
-        
+
         // 显示战斗波次（使用滚动视图）
         EditorGUILayout.Space(5);
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(300));
